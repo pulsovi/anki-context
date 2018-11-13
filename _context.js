@@ -2,18 +2,52 @@
  * Class AJAX
 \*/
 
-function getContext(){
+var AJAX = {};
+
+AJAX.get = function get (url) {
   var pnc = _.Promise.noCallBack();
-
-  xhr.open('GET', '_context.json');
-  xhr.onload = function() {
-    var context = JSON.parse(this.response);
-    pnc.resolve(context);
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.onload = function (){
+    pnc.resolve.call(this, this.response);
   };
-  xhr.onerror = xhr.onabort = pnc.reject;
+  xhr.onerror = xhr.onabort = function () {
+    pnc.reject.call(this, arguments);
+  };
   xhr.send(null);
-
   return pnc.promise;
+};
+
+AJAX.getJson = function(url) {
+  var pnc = _.Promise.noCallBack();
+  this.get(url)
+    .then(function (response) {
+      var json = JSON.parse(response);
+      pnc.resolve.call(this, json);
+    })
+    .catch(function(){
+      pnc.reject.call(this, arguments);
+    });
+};
+
+/*\
+ * Class Context
+\*/
+
+function Context(contextObj) {
+  this.context = contextObj;
+}
+
+Context.prototype.get = function(path) {
+  //TODO
+};
+
+/*\
+ * Class Vue
+\*/
+
+function Vue(template) {
+  this.template = template;
 }
 
 /*\
@@ -31,11 +65,9 @@ Console.prototype.log = function(element){
   this.element.appendChild(element);
 };
 
+/*\
+ * main
+\*/
 
-
-
-
-
-
-var context = document.getElementById('context');
-var xhr = new XMLHttpRequest();
+var console = new Console(document.getElementById('context'));
+var context = AJAX.getJson('_context.json');
