@@ -4,30 +4,30 @@
 
 var AJAX = {};
 
-AJAX.get = function get (url) {
+// Method
+AJAX.get = function get(url) {
   var pnc = _.Promise.noCallBack();
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url);
-  xhr.onload = function (){
+  xhr.onload = function() {
     pnc.resolve.call(this, this.response);
   };
-  xhr.onerror = xhr.onabort = function () {
-    pnc.reject.call(this, arguments);
-  };
+  xhr.onerror = xhr.onabort = pnc.reject;
   xhr.send(null);
   return pnc.promise;
 };
 
-AJAX.getJson = function(url) {
+AJAX.getJSON = function getJSON(url) {
   var pnc = _.Promise.noCallBack();
   this.get(url)
-    .then(function (response) {
+    .then(function(response) {
       var json = JSON.parse(response);
       pnc.resolve.call(this, json);
     })
-    .catch(function(){
+    .catch(function() {
       pnc.reject.call(this, arguments);
     });
+  return pnc.promise;
 };
 
 /*\
@@ -58,8 +58,8 @@ function Console(element) {
   this.element = element;
 }
 
-Console.prototype.log = function(element){
-  if(! Node.prototype.isPrototypeOf(element)){
+Console.prototype.log = function(element) {
+  if (!Node.prototype.isPrototypeOf(element)) {
     element = document.createTextNode(element);
   }
   this.element.appendChild(element);
@@ -70,4 +70,4 @@ Console.prototype.log = function(element){
 \*/
 
 var console = new Console(document.getElementById('context'));
-var context = AJAX.getJson('_context.json');
+var context = AJAX.getJSON('_context.json');
