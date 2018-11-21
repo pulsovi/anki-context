@@ -53,7 +53,12 @@ Tree.setParent = function setParent(obj, parent) {
 
 function Context(contextObj) {
   this.context = contextObj;
+  this.init();
 }
+
+Context.prototype.init = function init() {
+  Tree.setParent(this);
+};
 
 Context.prototype.get = function get(path) {
   var parts = path.split('.');
@@ -91,4 +96,4 @@ Console.prototype.log = function(element) {
 \*/
 
 var console = new Console(document.getElementById('context'));
-var context = AJAX.getJSON('_context.json');
+var context = new Context(AJAX.getJSON('_context.json'));
