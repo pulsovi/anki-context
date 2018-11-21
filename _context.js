@@ -55,8 +55,12 @@ function Context(contextObj) {
   this.context = contextObj;
 }
 
-Context.prototype.get = function(path) {
-  //TODO
+Context.prototype.get = function get(path) {
+  var parts = path.split('.');
+  var elem = this;
+  for (var i = 0; i < parts.length; ++i) {
+    elem = elem[parts[i]];
+  }
 };
 
 /*\
