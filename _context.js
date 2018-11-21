@@ -31,6 +31,23 @@ AJAX.getJSON = function getJSON(url) {
 };
 
 /*\
+ * Class Tree
+\*/
+
+var Tree = {};
+Tree.setParent = function setParent(obj, parent) {
+  if (typeof parent !== 'undefined') {
+    obj.parent = parent;
+  }
+  var keys = Object.keys(obj);
+  for (var i = 0; i < keys.length; ++i) {
+    if (typeof obj[keys[i]] === 'object') {
+      setParent(obj[keys[i]], obj);
+    }
+  }
+};
+
+/*\
  * Class Context
 \*/
 
