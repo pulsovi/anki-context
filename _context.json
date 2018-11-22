@@ -4,10 +4,14 @@
 			"ה": {}
 		}
 	},
+	"chass": {
+		"bavli": {}
+	},
 	"halakhah": {
 		"choulhan_aroukh": {
 			"orah_haim": {
 				"$": {
+					"name": "אורח חיים",
 					"groups": {
 						"tefilah": {
 							"$": {

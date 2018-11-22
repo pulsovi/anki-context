@@ -37,7 +37,7 @@ AJAX.getJSON = function getJSON(url) {
 var Tree = {};
 Tree.setParent = function setParent(obj, parent) {
   if (typeof parent !== 'undefined') {
-    obj.parent = parent;
+    obj.$.parent = parent;
   }
   var keys = Object.keys(obj);
   for (var i = 0; i < keys.length; ++i) {
