@@ -14,4 +14,6 @@ setTimeout(function() {
     script.src = src;
     document.head.appendChild(script);
   }
+
+  appendScript('_context.js');
 }, null);

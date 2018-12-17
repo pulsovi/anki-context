@@ -95,5 +95,8 @@ Console.prototype.log = function(element) {
  * main
 \*/
 
+log('_context.js starts\n');
+/**
 var console = new Console(document.getElementById('context'));
 var context = new Context(AJAX.getJSON('_context.json'));
+/**/
