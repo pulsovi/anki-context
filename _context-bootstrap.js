@@ -1,9 +1,13 @@
+var log;
 setTimeout(function() {
-  var console = document.getElementById('context');
-  var log = function(data){
-    console.appendChild(document.createTextNode(data));
-  };
-  log('context-bootsrap start');
+  log = (function IIFE(){
+    var console = document.getElementById('context');
+
+    return function(data){
+      console.appendChild(document.createTextNode(data));
+    };
+  }());
+  log('context-bootsrap starts\n');
 
   function appendScript(src) {
     var script = document.createElement('script');
