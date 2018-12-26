@@ -1,11 +1,11 @@
-(function iifeStrict(_) {
+(function iifeStrict(global) {
   'use strict';
-  _ = window._ = _ || {};
+  var _ = global._ = global._ || {};
 
   _.Promise = {
-    noCallBack : function noCallBack (){
+    noCallBack: function noCallBack() {
       var Rpromise, Rresolve, Rreject;
-      Rpromise = new Promise(function(resolve, reject){
+      Rpromise = new Promise(function(resolve, reject) {
         Rresolve = resolve;
         Rreject = reject;
       });
@@ -16,4 +16,4 @@
       };
     }
   };
-}(_));
+}(this));
