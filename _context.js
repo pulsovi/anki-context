@@ -6,12 +6,10 @@ var AJAX = {};
 
 // Method
 AJAX.get = function get(url) {
-  //log('AJAX.get <' + url + '>\n');
   var pnc = _.Promise.noCallBack();
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url);
   xhr.onload = function() {
-    //log('xhr loaded\n');
     pnc.resolve.call(this, this.response);
   };
   xhr.onerror = xhr.onabort = function(error) {
@@ -22,29 +20,13 @@ AJAX.get = function get(url) {
 };
 
 AJAX.getJSON = function getJSON(url) {
-  //log('AJAX.getJSON <' + url + '>\n');
   var pnc = _.Promise.noCallBack();
   this.get(url)
     .then(function(response) {
-      //log('AJAX loaded <' + url + '>\n');
-      //log('##############################\n');
-      //log(response);
-      //log('##############################\n');
       var json = JSON.parse(response);
       pnc.resolve.call(this, json);
     })
     .catch(function(error) {
-      //log('AJAX error <' + arguments.length + '>\n');
-      //log('error <' + error + '>\n');
-      /**
-      for (var i in error) {
-        try {
-          log(i + '<' + error[i] + '>\n');
-        } catch (e) {
-          log(e + '\n');
-        }
-      }
-      /**/
       pnc.reject.call(this, arguments);
     });
   return pnc.promise;
@@ -92,28 +74,23 @@ Tree.setRelation = function setRelation(obj, parent) {
 \*/
 
 function Context(contextObj) {
-  //log(contextObj + '\n');
   this.context = contextObj;
   this.init();
 }
 
 Context.prototype.init = function init() {
-  //log('context init\n');
   Tree.setRelation(this);
 };
 
 Context.prototype.get = function get(path) {
-  //log('get', path);
   var parts = path.split('.');
   var elem = this.context;
   for (var i = 0; i < parts.length; ++i) {
-    //log(elem, parts[i]);
     if (elem.hasOwnProperty(parts[i])) {
       elem = elem[parts[i]];
     } else if (elem.hasOwnProperty('$') && elem.$.hasOwnProperty(parts[i])) {
       elem = elem.$[parts[i]];
     } else {
-      //log("Erreur, l'element " + parts[i] + " est introuvable");
     }
     if (null === elem) {
       return null;
