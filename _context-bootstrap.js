@@ -1,8 +1,10 @@
 var global = this;
 
 var log = (function IIFE() {
-  var console = document.getElementById('context');
+  var console = document.getElementById('context-log');
+  if (console === null) return function(){};
 
+  console.setAttribute('dir', 'ltr');
   return function(data) {
     console.appendChild(document.createTextNode(data));
   };
@@ -55,6 +57,9 @@ function appendScript(src) {
 }
 
 function main() {
+  if('undefined' === typeof global.context){
+    log("Le context n'a pas pu être chargé.\nMerci de vérifier la syntaxe du fichier <_get-context.js>\n");
+  }
   var context = new Context(global.context);
   var collection = document.querySelectorAll('[context-data]');
   var cible, contextContent;
