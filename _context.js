@@ -37,7 +37,8 @@ AJAX.getJSON = function getJSON(url) {
 \*/
 
 var Tree = {};
-Tree.setRelation = function setRelation(obj, parent) {
+Tree.setRelation = function setRelation(obj, parent, path) {
+  path = path || '$';
   if (typeof parent !== 'undefined') {
     obj.$ = obj.$ || {};
     obj.$.parent = parent;
@@ -57,14 +58,14 @@ Tree.setRelation = function setRelation(obj, parent) {
       obj[keys[i]].$.previousSibling = obj[keys[i - 1]];
     }
 
-    if (keys.length === keys[i + 1]) {
+    if (keys.length === (i + 1)) {
       obj[keys[i]].$.nextSibling = null;
     } else {
       obj[keys[i]].$.nextSibling = obj[keys[i + 1]];
     }
 
     if (typeof obj[keys[i]] === 'object') {
-      setRelation(obj[keys[i]], obj);
+      setRelation(obj[keys[i]], obj, path + '.' + [keys[i]]);
     }
   }
 };
@@ -90,7 +91,6 @@ Context.prototype.get = function get(path) {
       elem = elem[parts[i]];
     } else if (elem.hasOwnProperty('$') && elem.$.hasOwnProperty(parts[i])) {
       elem = elem.$[parts[i]];
-    } else {
     }
     if (null === elem) {
       return null;
