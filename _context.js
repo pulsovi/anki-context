@@ -96,6 +96,13 @@ Context.prototype.get = function get(path) {
       return null;
     }
   }
+  if ('object' === typeof elem && null !== elem) {
+    var keys = Object.keys(elem);
+    if (~keys.indexOf('$')) {
+      keys.splice(keys.indexOf('$'), 1, '$:{' + Object.keys(elem.$).join(',\n\t\t') + '}');
+    }
+    elem = '{' + keys.join(',\n\t') + '}';
+  }
   return elem;
 };
 
