@@ -39,8 +39,9 @@ AJAX.getJSON = function getJSON(url) {
 var Tree = {};
 Tree.setRelation = function setRelation(obj, parent, path) {
   path = path || '$';
+  var i;
+  var $ = obj.$ = obj.$ || {};
   if (typeof parent !== 'undefined') {
-    obj.$ = obj.$ || {};
     obj.$.parent = parent;
   }
 
@@ -49,7 +50,7 @@ Tree.setRelation = function setRelation(obj, parent, path) {
     keys.splice(keys.indexOf("$"), 1);
   }
 
-  for (var i = 0; i < keys.length; ++i) {
+  for (i = 0; i < keys.length; ++i) {
     obj[keys[i]].$ = obj[keys[i]].$ || {};
 
     if (0 === i) {
@@ -66,6 +67,21 @@ Tree.setRelation = function setRelation(obj, parent, path) {
 
     if (typeof obj[keys[i]] === 'object') {
       setRelation(obj[keys[i]], obj, path + '.' + [keys[i]]);
+    }
+  }
+
+  if ($.hasOwnProperty('groups')) {
+    var group, start, end, j, k;
+    for (i in $.groups) {
+      group = $.groups[i].$;
+      start = group.start;
+      end = group.end;
+      for (j = 0; j < keys.length; ++j) {
+        k = keys[j] | 0;
+        if (k == keys[j] && k >= start && k <= end) {
+          obj[k].$.group = group;
+        }
+      }
     }
   }
 };
