@@ -37,53 +37,70 @@ AJAX.getJSON = function getJSON(url) {
 \*/
 
 var Tree = {};
-Tree.setRelation = function setRelation(obj, parent, path) {
-  path = path || '$';
-  var i;
-  var $ = obj.$ = obj.$ || {};
-  if (typeof parent !== 'undefined') {
-    obj.$.parent = parent;
-  }
-
+Tree.setRelation = function setRelation(obj) {
   var keys = Object.keys(obj);
+  var groups = (obj.$ && obj.$.groups) || [];
+
   if (~keys.indexOf("$")) {
     keys.splice(keys.indexOf("$"), 1);
   }
 
+  keys.sort(Tree.keysSortFunc);
+  groups.sort(Tree.groupsSortFunc);
+
+  var i, key, child, group;
+
+  group = groups.shift();
   for (i = 0; i < keys.length; ++i) {
-    obj[keys[i]].$ = obj[keys[i]].$ || {};
+    key = keys[i];
+    child = obj[key];
 
-    if (0 === i) {
-      obj[keys[i]].$.previousSibling = null;
-    } else {
-      obj[keys[i]].$.previousSibling = obj[keys[i - 1]];
+    if ('object' !== typeof child) {
+      continue;
     }
 
-    if (keys.length === (i + 1)) {
-      obj[keys[i]].$.nextSibling = null;
-    } else {
-      obj[keys[i]].$.nextSibling = obj[keys[i + 1]];
-    }
+    child.$ = child.$ || {};
 
-    if (typeof obj[keys[i]] === 'object') {
-      setRelation(obj[keys[i]], obj, path + '.' + [keys[i]]);
-    }
-  }
+    child.$.parent = obj;
+    child.$.title = child.$.title || key;
 
-  if ($.hasOwnProperty('groups')) {
-    var group, start, end, j, k;
-    for (i in $.groups) {
-      group = $.groups[i].$;
-      start = group.start;
-      end = group.end;
-      for (j = 0; j < keys.length; ++j) {
-        k = keys[j] | 0;
-        if (k == keys[j] && k >= start && k <= end) {
-          obj[k].$.group = group;
-        }
+    if (key | 0 == key) {
+      while (group && group.end < key) {
+        group = groups.shift();
+      }
+      if (group && group.start <= key) {
+        child.$.group = group;
       }
     }
+
+    if (0 === i || (child.$.group && keys[i - 1] < child.$.group.start)) {
+      child.$.previousSibling = null;
+    } else {
+      child.$.previousSibling = obj[keys[i - 1]];
+    }
+
+    if (keys.length === (i + 1) || (child.$.group && keys[i + 1] > child.$.group.end)) {
+      child.$.nextSibling = null;
+    } else {
+      child.$.nextSibling = obj[keys[i + 1]];
+    }
+
+    setRelation(child);
   }
+};
+
+Tree.keysSortFunc = function keysSortFunc(a, b) {
+  if (a | 0 == a) {
+    return b | 0 == b ? a - b : -1;
+  } else if (b | 0 == b) {
+    return 1;
+  } else {
+    return a < b ? -1 : a > b ? 1 : 0;
+  }
+};
+
+Tree.groupsSortFunc = function groupsSortFunc(a, b){
+  return a.start - b.start;
 };
 
 /*\
@@ -96,7 +113,7 @@ function Context(contextObj) {
 }
 
 Context.prototype.init = function init() {
-  Tree.setRelation(this);
+  Tree.setRelation(this.context);
 };
 
 Context.prototype.get = function get(path) {

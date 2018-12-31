@@ -93,7 +93,7 @@ Project.tags = {
 };
 
 Project.prototype.require = function require(dependancy) {
-  if(! (dependancy instanceof Project)){
+  if (!(dependancy instanceof Project)) {
     throw new TypeError('dependancy doit etre un Project');
   }
   this.dependancy.push(dependancy);
@@ -137,7 +137,7 @@ Project.prototype.reload = function reload() {
   }
 
   Thenable.all(allThenableFront)
-    .then(function(){
+    .then(function() {
       return project['reload' + project.type.toCapitalCase()]();
     })
     .then(function() {
@@ -158,7 +158,7 @@ Project.prototype.loadScript = function loadScript() {
   return thenable.front;
 };
 
-Project.prototype.reloadScript = function reloadScript(){
+Project.prototype.reloadScript = function reloadScript() {
   console.error('la fonction reloadScript doit etre ecrite');
 };
 
@@ -167,10 +167,11 @@ Project.prototype.watch = function watch() {
 };
 
 var log = Log('context-log');
-var context_json = new Project('_get-context.js');
-var promise_polyfill = new Project('_promise_polyfill.js');
-var underscore_promise = new Project('_Promise.js').require(promise_polyfill);
-var context_js = new Project('_context.js').require(underscore_promise);
-var main = new Project('_main-context.js').require(context_json).require(context_js);
-
-main.load();
+new Project('_main-context.js')
+  .require(new Project('_get-context.js'))
+  .require(new Project('_context.js')
+    .require(new Project('_Promise.js')
+      .require(new Project('_promise_polyfill.js'))
+    )
+  )
+  .load();
