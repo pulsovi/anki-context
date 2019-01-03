@@ -166,12 +166,15 @@ Project.prototype.watch = function watch() {
   console.error('la fonction watch doit etre ecrite');
 };
 
-var log = Log('context-log');
-new Project('_main-context.js')
-  .require(new Project('_get-context.js'))
-  .require(new Project('_context.js')
-    .require(new Project('_Promise.js')
-      .require(new Project('_promise_polyfill.js'))
+setTimeout(function() {
+  var log = Log('context-log');
+  log("starts");
+  new Project('_main-context.js')
+    .require(new Project('_get-context.js'))
+    .require(new Project('_context.js')
+      .require(new Project('_Promise.js')
+        .require(new Project('_promise_polyfill.js'))
+      )
     )
-  )
-  .load();
+    .load();
+}, null);
