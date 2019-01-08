@@ -34,9 +34,19 @@ function ThenableFront(parent) {
 }
 
 ThenableFront.prototype.then = function then(cb) {
-  this.parent.thenCb.push(cb);
+  if ('function' !== typeof cb) {
+    throw new TypeError(cb + 'is not a function');
+  }
   if (this.parent.solved) {
-    this.parent.resolve();
+    if (this.parent.next) {
+      this.parent.next.then(cb);
+    } else {
+      setTimeout(function() {
+        cb();
+      }, null);
+    }
+  } else {
+    this.parent.thenCb.push(cb);
   }
   return this;
 };
@@ -47,7 +57,6 @@ Thenable.all = function all(thenableFrontArr, id) {
 
   var next = function next() {
     ++resolved;
-    thenableFrontArr.test = (thenableFrontArr.test | 0) + 1;
     if (resolved === thenableFrontArr.length) {
       thenable.resolve();
     }
@@ -56,25 +65,22 @@ Thenable.all = function all(thenableFrontArr, id) {
   for (var i = 0; i < thenableFrontArr.length; ++i) {
     thenableFrontArr[i].then(next);
   }
-  next();
+  setTimeout(next, null);
   return thenable.front;
 };
 
 Thenable.prototype.resolve = function(value) {
-  var cbRetVal = this.thenCb.shift();
-  if (cbRetVal) {
-    cbRetVal.call(this, value);
-  }
-  var cb = null;
-  if (this.thenCb.length) {
+  var cb, cbRetVal;
+  while ((cb = this.thenCb.shift())) {
+    cbRetVal = cb.call(this, value);
     if (cbRetVal instanceof ThenableFront) {
       while ((cb = this.thenCb.shift())) {
         cbRetVal.then(cb);
       }
+      this.next = cbRetVal;
     }
   }
   this.solved = true;
-  this.next = cbRetVal;
 };
 
 
@@ -148,7 +154,7 @@ Project.prototype.reload = function reload() {
 };
 
 Project.prototype.loadScript = function loadScript() {
-  var thenable = new Thenable(this.src);
+  var thenable = new Thenable();
   var script = document.createElement('script');
   script.onload = function() {
     thenable.resolve(this);
@@ -166,9 +172,9 @@ Project.prototype.watch = function watch() {
   console.error('la fonction watch doit etre ecrite');
 };
 
-setTimeout(function() {
-  var log = Log('context-log');
-  log("starts");
+setTimeout(function bootstrapIIFE() {
+  global.log = Log('context-log');
+  log("starts\n");
   new Project('_main-context.js')
     .require(new Project('_get-context.js'))
     .require(new Project('_context.js')
