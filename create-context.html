@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Create context</title>
+  <style type="text/css">
+  .context-quote div {
+    font-family: "arial";
+    text-align: justify;
+  }
+
+  .context-quote div blockquote {
+    background-color: rgb(200, 200, 200);
+    background-color: rgba(200, 200, 200, 0.5);
+    display: inline;
+    font-style: italic;
+  }
+  </style>
+</head>
+
+<body>
+  <label for="data">data</label><input id="data"></input><br>
+  <label for="length">title-length</label><input type="number" id="length"><br>
+  <label for="bold">bold</label><input id="bold"></input><br>
+  <div id="output" dir="rtl" style="width: 22em;"><div></div></div>
+  <textarea id="model" style="width: 400px; height: 100px;"></textarea>
+  <textarea id="rendered" style="width: 400px; height: 100px;"></textarea>
+  <div id="diff"></div>
+  <script type="text/javascript">
+  var data = document.getElementById('data');
+  var length = document.getElementById('length');
+  var bold = document.getElementById('bold');
+  var output = document.getElementById('output').firstChild;
+  var model = document.getElementById('model');
+  var diff = document.getElementById('diff');
+  var rendered = document.getElementById('rendered');
+
+  output.removeAttribute('id');
+  data.onchange = data.onkeyup = length.onchange = length.onkeyup = bold.onchange = bold.onkeyup = reload;
+
+  function reload() {
+    output.innerHTML = '&#8203;';
+    output.setAttribute('context-quote', data.value);
+    output.setAttribute('context-title-deep', length.value);
+    output.setAttribute('context-bold', bold.value);
+    model.value = output.outerHTML;
+    (new Project('_main-context.js'))
+    .require(new Project('_get-context.js'))
+      .load()
+      .then(function() {
+        diff.innerText = model.value.length + ' : ' + output.innerHTML.length;
+        rendered.value = output.innerHTML;
+      });
+  }
+  </script>
+  <script type="text/javascript" src="_context-bootstrap.js"></script>
+</body>
+
+</html>
