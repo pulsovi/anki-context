@@ -33,7 +33,10 @@ function ThenableFront(parent) {
   this.parent = parent;
 }
 
-ThenableFront.prototype.then = function then(cb) {
+ThenableFront.prototype.then = function then(cb, id) {
+//  console.error('ajout de listener pour', this.parent.id, id);
+  var thenable = this.parent;
+  cb.id = id;
   if ('function' !== typeof cb) {
     throw new TypeError(cb + 'is not a function');
   }
@@ -42,6 +45,7 @@ ThenableFront.prototype.then = function then(cb) {
       this.parent.next.then(cb);
     } else {
       setTimeout(function() {
+//        console.error('declenchement du listener', cb.id, 'sur event', thenable.id, 'deja resolu');
         cb();
       }, null);
     }
@@ -52,30 +56,33 @@ ThenableFront.prototype.then = function then(cb) {
 };
 
 Thenable.all = function all(thenableFrontArr, id) {
-  var thenable = new Thenable();
+  var thenable = new Thenable(id);
   var resolved = -1;
 
   var next = function next() {
     ++resolved;
+//    console.error('next', resolved, '/', thenableFrontArr.length, id);
     if (resolved === thenableFrontArr.length) {
       thenable.resolve();
     }
   };
 
   for (var i = 0; i < thenableFrontArr.length; ++i) {
-    thenableFrontArr[i].then(next);
+    thenableFrontArr[i].then(next, 'increment next ' + id);
   }
   setTimeout(next, null);
   return thenable.front;
 };
 
 Thenable.prototype.resolve = function(value) {
+//  console.error('event', this.id, 'declenché');
   var cb, cbRetVal;
   while ((cb = this.thenCb.shift())) {
+//    console.error('declenchement du listener ' + cb.id + ' sur event ' + this.id);
     cbRetVal = cb.call(this, value);
     if (cbRetVal instanceof ThenableFront) {
       while ((cb = this.thenCb.shift())) {
-        cbRetVal.then(cb);
+        cbRetVal.then(cb, cb.id);
       }
       this.next = cbRetVal;
     }
@@ -107,7 +114,7 @@ Project.prototype.require = function require(dependancy) {
 };
 
 Project.prototype.load = function load() {
-  var thenable = new Thenable();
+  var thenable = new Thenable('load' + this.src);
   if (this.loaded) {
     thenable.resolve();
     return thenable.front;
@@ -120,13 +127,14 @@ Project.prototype.load = function load() {
     allThenableFront.push(this.dependancy[i].load());
   }
 
-  Thenable.all(allThenableFront)
+  Thenable.all(allThenableFront, 'dependances de ' + this.src + '[' + this.dependancy.map(function(project) { return project.src; }).join(', ') + ']')
     .then(function() {
+//      console.error("tous les prerequis de", project.src, '[' + project.dependancy.map(function(project) { return project.src; }).join(', ') + ']', "sont chargés");
       return project['load' + project.type.toCapitalCase()]();
-    })
+    }, 'chargement de ' + this.src)
     .then(function() {
       thenable.resolve();
-    });
+    }, 'emit event : ' + this.src + ' loaded');
 
   this.loaded = true;
 
@@ -154,9 +162,11 @@ Project.prototype.reload = function reload() {
 };
 
 Project.prototype.loadScript = function loadScript() {
-  var thenable = new Thenable();
+//  console.error('chargement', this.src);
+  var thenable = new Thenable('loadScript' + this.src);
   var script = document.createElement('script');
   script.onload = function() {
+    //console.log(this.src + ' chargé');
     thenable.resolve(this);
   };
   document.head.appendChild(script);
