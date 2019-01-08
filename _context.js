@@ -62,7 +62,8 @@ Tree.setRelation = function setRelation(obj) {
     child.$ = child.$ || {};
 
     child.$.parent = obj;
-    child.$.title = child.$.title || key;
+    child.$.title = child.$.title || child.$.id || key;
+    child.$.id = child.$.id || child.$.title;
 
     if (key | 0 == key) {
       while (group && group.end < key) {
@@ -117,6 +118,7 @@ Context.prototype.init = function init() {
 };
 
 Context.prototype.get = function get(path) {
+//  console.error('get', path);
   var parts = path.split('.');
   var elem = this.context;
   for (var i = 0; i < parts.length; ++i) {
