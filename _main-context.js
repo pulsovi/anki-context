@@ -112,7 +112,7 @@
     var titleCible = element.getAttribute('context-quote');
     var titleArr = [];
     for (; titleDeep > 0; --titleDeep) {
-      titleArr.unshift(context.get(titleCible + '.id'));
+      titleArr.unshift(context.get(titleCible + '.title'));
       titleCible += '.parent';
     }
     titleElem.appendChild(document.createTextNode(titleArr.join(' ') + ':'));
