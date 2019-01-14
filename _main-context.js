@@ -110,9 +110,9 @@
     var titleDeep = element.getAttribute('context-title-deep') || 1;
     var titleElem = document.createElement('code');
     var titleCible = element.getAttribute('context-quote');
-    var titleArr = [context.get(titleCible + '.title')];
+    var titleArr = [context.get(titleCible + '.title', { type: 'string' })];
     for (; titleDeep > 0; --titleDeep) {
-      titleArr.unshift(context.get(titleCible + '.id'));
+      titleArr.unshift(context.get(titleCible + '.id', { type: 'string' }));
       titleCible += '.parent';
     }
     titleElem.appendChild(document.createTextNode(titleArr.join(' ') + ':'));
