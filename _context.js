@@ -62,8 +62,8 @@ Tree.setRelation = function setRelation(obj) {
     child.$ = child.$ || {};
 
     child.$.parent = obj;
-    child.$.title = child.$.title || child.$.id || key;
-    child.$.id = child.$.id || child.$.title;
+    //child.$.title = child.$.title || child.$.id || key;
+    child.$.id = child.$.id || child.$.title || key;
 
     if (key | 0 == key) {
       while (group && group.end < key) {
