@@ -117,8 +117,10 @@ Context.prototype.init = function init() {
   Tree.setRelation(this.context);
 };
 
-Context.prototype.get = function get(path) {
-//  console.error('get', path);
+Context.prototype.get = function get(path, options) {
+  console.error('get', path);
+  options = options || {};
+  options.type = options.type || null;
   var parts = path.split('.');
   var elem = this.context;
   for (var i = 0; i < parts.length; ++i) {
@@ -128,8 +130,11 @@ Context.prototype.get = function get(path) {
       elem = elem.$[parts[i]];
     }
     if (null === elem) {
-      return null;
+      break;
     }
+  }
+  if ('string' !== typeof elem && 'string' === options.type){
+    return '';
   }
   if ('object' === typeof elem && null !== elem) {
     var keys = Object.keys(elem);
