@@ -23,7 +23,9 @@
   <label for="data">data</label><input id="data"></input><br>
   <label for="length">title-length</label><input type="number" id="length"><br>
   <label for="bold">bold</label><input id="bold"></input><br>
-  <div id="output" dir="rtl" style="width: 22em;"><div></div></div>
+  <div id="output" dir="rtl" style="width: 22em;">
+    <div></div>
+  </div>
   <textarea id="model" style="width: 400px; height: 100px;"></textarea>
   <textarea id="rendered" style="width: 400px; height: 100px;"></textarea>
   <div id="diff"></div>
@@ -31,7 +33,7 @@
   var data = document.getElementById('data');
   var length = document.getElementById('length');
   var bold = document.getElementById('bold');
-  var output = document.getElementById('output').firstChild;
+  var output = document.getElementById('output').firstElementChild;
   var model = document.getElementById('model');
   var diff = document.getElementById('diff');
   var rendered = document.getElementById('rendered');
