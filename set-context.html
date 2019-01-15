@@ -9,7 +9,7 @@
 
 <body>
   <div class="container" ng-app="set-context">
-    <div ng-controller="breadcrumbController">
+    <div ng-controller="contextController">
       <ol class="breadcrumb">
         <li class="breadcrumb-item" ng-repeat="(fIndex, floor) in path">
           <div class="btn-group">
@@ -23,6 +23,12 @@
           </div>
         </li>
       </ol>
+      <form>
+        <div class="form-group" ng-repeat="key in currentElementProperties">
+          <label for="{{key}}">{{currentElement[key] | getType}} - {{key}}</label>
+          <input class="form-control" id="{{key}}" ng-model="currentElement[key]">
+        </div>
+      </form>
     </div>
   </div>
   <textarea id="input"></textarea>

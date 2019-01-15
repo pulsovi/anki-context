@@ -1,8 +1,15 @@
-// Define the `set-context` module
-var setContext = angular.module('set-context', []);
+angular.module('customfilter', []).filter('getType', function() {
+  return function(obj) {
+    return typeof obj;
+  };
+});
 
-// Define the `breadcrumbController` controller on the `set-context` module
-setContext.controller('breadcrumbController', function breadcrumbController($scope) {
+// Define the `set-context` module
+var setContext = angular.module('set-context', ['customfilter']);
+
+// Define the `contextController` controller on the `set-context` module
+setContext.controller('contextController', function contextController($scope) {
+  window.mainScope = $scope;
   $scope.path = [{ id: 'context' }];
   $scope.context = context;
   $scope.setPath = function(index, key) {
@@ -18,6 +25,11 @@ setContext.controller('breadcrumbController', function breadcrumbController($sco
       elem = elem[$scope.path[i].id];
     }
     elem = elem[key];
+    $scope.currentElement = elem;
+    $scope.currentElementProperties = Object.keys(elem)
+      .filter(function (k){
+        return 'object' !== typeof elem[k];
+      });
     // preparer le splice
     var keys = Object.keys(elem)
       .filter(function(k) {
@@ -27,11 +39,4 @@ setContext.controller('breadcrumbController', function breadcrumbController($sco
     $scope.path.splice(index + 1, $scope.path.length, elem);
   };
   $scope.setPath();
-  /*
-  le path contient des object de ce format
-  {
-    id: cle d'acces a l'objet depuis son parent
-    keys: liste des cles enfants
-  }
-  */
 });
