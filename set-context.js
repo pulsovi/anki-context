@@ -39,4 +39,20 @@ setContext.controller('contextController', function contextController($scope) {
     $scope.path.splice(index + 1, $scope.path.length, elem);
   };
   $scope.setPath();
+
+  function getChild(root, path) {
+    var child = root;
+    var key;
+    while((key = path.shift())){
+      child = child[key];
+    }
+    return child;
+  }
+
+  function getPath(index, key) {
+    var path = $scope.path.slice(0, index + 1)
+      .map(function(i) { return i.id; })
+      .concat(key);
+    return getChild($scope, path);
+  }
 });
