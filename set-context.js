@@ -66,4 +66,11 @@ setContext.controller('contextController', function contextController($scope) {
   function getFieldsList(elem) {
     return elem.$ ? Object.keys(elem.$) : [];
   }
+
+  function savePath() {
+    var pathList = $scope.path.map(function(e) {
+      return e.id;
+    });
+    localStorage.setItem('path', JSON.stringify(pathList));
+  }
 });
