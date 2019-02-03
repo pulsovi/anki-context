@@ -19,24 +19,12 @@ setContext.controller('contextController', function contextController($scope) {
       key = $scope.path[index].id;
       --index;
     }
-    // recuperer objet selectionne
-    var elem = $scope;
-    for (var i = 0; i <= index; ++i) {
-      elem = elem[$scope.path[i].id];
-    }
-    elem = elem[key];
-    $scope.currentElement = elem;
-    $scope.currentElementProperties = Object.keys(elem)
-      .filter(function (k){
-        return 'object' !== typeof elem[k];
-      });
-    // preparer le splice
-    var keys = Object.keys(elem)
-      .filter(function(k) {
-        return 'object' === typeof elem[k];
-      });
-    elem = { id: key, keys: keys };
-    $scope.path.splice(index + 1, $scope.path.length, elem);
+    // main
+    var elem = $scope.currentElement = getPath(index, key);
+    $scope.currentElementProperties = getFieldsList(elem);
+    var pathItem = { id: key, keys: getChildrenList(elem) };
+    $scope.path.splice(index + 1, $scope.path.length, pathItem);
+    savePath();
   };
   $scope.setPath();
 
