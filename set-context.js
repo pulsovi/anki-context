@@ -55,4 +55,15 @@ setContext.controller('contextController', function contextController($scope) {
       .concat(key);
     return getChild($scope, path);
   }
+
+  function getChildrenList(elem) {
+    var keys = Object.keys(elem);
+    return keys.filter(function(k) {
+      return k !== '$';
+    });
+  }
+
+  function getFieldsList(elem) {
+    return elem.$ ? Object.keys(elem.$) : [];
+  }
 });
