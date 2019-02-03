@@ -10,8 +10,10 @@ var setContext = angular.module('set-context', ['customfilter']);
 // Define the `contextController` controller on the `set-context` module
 setContext.controller('contextController', function contextController($scope) {
   window.mainScope = $scope;
-  $scope.path = [{ id: 'context' }];
+
+  $scope.path = [];
   $scope.context = context;
+
   $scope.setPath = function(index, key) {
     // valeurs par defaut
     index = index || 0;
@@ -26,7 +28,6 @@ setContext.controller('contextController', function contextController($scope) {
     $scope.path.splice(index + 1, $scope.path.length, pathItem);
     savePath();
   };
-  $scope.setPath();
 
   function getChild(root, path) {
     var child = root;
@@ -61,4 +62,14 @@ setContext.controller('contextController', function contextController($scope) {
     });
     localStorage.setItem('path', JSON.stringify(pathList));
   }
+
+  function restorePath() {
+    var savedPath = localStorage.getItem("path");
+    savedPath = savedPath ? JSON.parse(savedPath) : ["context"];
+    for (var i = 0; i < savedPath.length; ++i) {
+      $scope.setPath(i - 1, savedPath[i]);
+    }
+  }
+
+  restorePath();
 });
