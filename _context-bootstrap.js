@@ -20,6 +20,32 @@ function Log(id) {
   };
 }
 
+Log.error = function IIFE() {
+  var console = null;
+
+  function getConsole() {
+    if (console !== null) return console;
+    console = document.createElement('div');
+    console.setAttribute('style',
+      'background: pink;' +
+      'color: red;' +
+      'border-radius: 20px;' +
+      'border: solid red 1px;' +
+      'bottom: 0;' +
+      'left: 0;' +
+      'position: fixed;' +
+      'right: 0;' +
+      'top: 0;' +
+      'z-index: 9999;'
+    );
+    document.body.appendChild(console);
+    return console;
+  }
+  return function error(data) {
+    getConsole().appendChild(document.createTextNode(data));
+  };
+}();
+
 /*\
  * Thenable
 \*/
