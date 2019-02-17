@@ -29,10 +29,23 @@ setContext.controller('contextController', function contextController($scope) {
     savePath();
   };
 
+  $scope.addChild = function addChild(key) {
+    $scope.currentElement[key] = {};
+    $scope.keyName = '';
+    $scope.path[$scope.path.length - 1].keys.push(key);
+  };
+
+  $scope.addProperty = function addProperty(key) {
+    $scope.currentElement.$ = $scope.currentElement.$ || {};
+    $scope.currentElement.$[key] = "";
+    $scope.keyName = '';
+    $scope.currentElementProperties.push(key);
+  };
+
   function getChild(root, path) {
     var child = root;
     var key;
-    while((key = path.shift())){
+    while ((key = path.shift())) {
       child = child[key];
     }
     return child;
