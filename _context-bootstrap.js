@@ -218,5 +218,11 @@ setTimeout(function bootstrapIIFE() {
         .require(new Project('_promise_polyfill.js'))
       )
     )
-    .load();
+    .load()
+    .then(function() {
+      var answer = document.getElementById('answer');
+      if (answer) {
+        answer.scrollIntoView();
+      }
+    });
 }, null);
