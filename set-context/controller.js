@@ -1,3 +1,16 @@
+// jshint esversion : 6
+
+const fs = require('fs');
+const ngui = require('nw.gui');
+const nwin = ngui.Window.get();
+
+(function MaximizeIIFE() {
+  nwin.on('loaded', function() {
+    nwin.show();
+    nwin.maximize();
+  });
+}());
+
 angular.module('customfilter', []).filter('getType', function() {
   return function(obj) {
     return typeof obj;
