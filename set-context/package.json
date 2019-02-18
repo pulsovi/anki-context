@@ -5,7 +5,7 @@
   },
   "description": "create and update a JSON file to provide context on Anki cards",
   "license": "ISC",
-  "main": "set-context.html",
+  "main": "index.html",
   "name": "anki-context",
   "repository": {
     "type": "git",

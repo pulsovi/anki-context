@@ -1,8 +1,10 @@
 // jshint esversion : 6
 
 const fs = require('fs');
+const fsp = fs.promises;
 const ngui = require('nw.gui');
 const nwin = ngui.Window.get();
+const _ = require('dg-underscore');
 
 (function MaximizeIIFE() {
   nwin.on('loaded', function() {
@@ -22,6 +24,28 @@ var setContext = angular.module('set-context', ['customfilter']);
 
 // Define the `contextController` controller on the `set-context` module
 setContext.controller('contextController', function contextController($scope) {
+  var getConfig = (function IIFEgetConfig(){
+    var config = null;
+    return function getConfig() {
+      var pnc = _.Promise.noCallBack();
+      if (config !== null) {
+        setImmediate(function(){
+          pnc.resolve(config);
+        });
+      } else {
+        fsp.readFile("config.json")
+        .then(function(data){
+          config = JSON.parse(data);
+          pnc.resolve(config);
+        })
+        .catch(function(err){
+          pnc.reject(err);
+        });
+      }
+      return pnc.promise;
+    };
+  }());
+
   window.mainScope = $scope;
 
   $scope.path = [];
@@ -53,6 +77,18 @@ setContext.controller('contextController', function contextController($scope) {
     $scope.currentElement.$[key] = "";
     $scope.keyName = '';
     $scope.currentElementProperties.push(key);
+  };
+
+  $scope.getTheFile = function getTheFile() {
+    var content =
+      '(function(global){global.context=' +
+      JSON.stringify($scope.context) +
+      ';})(this);\n';
+    getConfig().then(function(config){
+      config.path["_get-context.js"].forEach(function(path){
+        fs.writeFile(path, content);
+      });
+    });
   };
 
   function getChild(root, path) {
