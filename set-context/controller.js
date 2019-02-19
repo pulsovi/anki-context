@@ -89,6 +89,12 @@ setContext.controller('contextController', function contextController($scope) {
     });
   };
 
+  $scope.addFullChild = function addFullChild(key, focus = true) {
+    $scope.addChild(key, focus);
+    $scope.addProperty('id', focus);
+    $scope.addProperty('title', false);
+  };
+
   $scope.getTheFile = function getTheFile() {
     var content =
       '(function(global){global.context=' +

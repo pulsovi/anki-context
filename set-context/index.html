@@ -33,11 +33,12 @@
         <div class="form-group">
           <label>Ajouter : </label><input ng-model="keyName" class="form-control">
         </div>
-        <div class="form-group">
-          <i class="btn btn-primary" ng-click="addProperty(keyName)" ng-show="keyName">champ</i>
-          <i class="btn btn-success" ng-click="addChild(keyName)" ng-show="keyName">enfant</i>
+        <div class="form-group" ng-show="keyName">
+          <i class="btn btn-primary" ng-click="addProperty(keyName)">propriété</i>
+          <i class="btn btn-success" ng-click="addChild(keyName)">noeud</i>
+          <i class="btn btn-success" ng-click="addFullChild(keyName)">noeud+ref</i>
         </div>
-        <div class="form-group">
+        <div class="form-group" ng-hide="keyName">
           <i class="btn btn-danger" ng-click="getTheFile()">Telecharger</i>
         </div>
       </form>
