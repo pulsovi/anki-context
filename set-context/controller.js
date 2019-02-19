@@ -69,7 +69,7 @@ setContext.controller('contextController', function contextController($scope) {
   };
 
   $scope.addChild = function addChild(key, focus = true) {
-    $scope.currentElement[key] = {};
+    $scope.currentElement[key] = $scope.currentElement[key] || {};
     $scope.keyName = '';
     if (focus) {
       $scope.setPath($scope.path.length - 1, key);
@@ -80,9 +80,10 @@ setContext.controller('contextController', function contextController($scope) {
 
   $scope.addProperty = function addProperty(key, focus = true) {
     $scope.currentElement.$ = $scope.currentElement.$ || {};
-    $scope.currentElement.$[key] = "";
+    $scope.currentElement.$[key] = $scope.currentElement.$[key] || "";
     $scope.keyName = '';
-    $scope.currentElementProperties.push(key);
+    if (!~$scope.currentElementProperties.indexOf(key))
+      $scope.currentElementProperties.push(key);
     if (focus) setImmediate(function() {
       document.getElementById('prop-' + key).focus();
     });
