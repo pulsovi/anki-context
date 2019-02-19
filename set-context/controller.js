@@ -6,6 +6,8 @@ const ngui = require('nw.gui');
 const nwin = ngui.Window.get();
 const _ = require('dg-underscore');
 
+window.setImmediate = global.setImmediate;
+
 (function MaximizeIIFE() {
   nwin.on('loaded', function() {
     nwin.show();
@@ -66,17 +68,24 @@ setContext.controller('contextController', function contextController($scope) {
     savePath();
   };
 
-  $scope.addChild = function addChild(key) {
+  $scope.addChild = function addChild(key, focus = true) {
     $scope.currentElement[key] = {};
     $scope.keyName = '';
-    $scope.path[$scope.path.length - 1].keys.push(key);
+    if (focus) {
+      $scope.setPath($scope.path.length - 1, key);
+    } else {
+      $scope.path[$scope.path.length - 1].keys.push(key);
+    }
   };
 
-  $scope.addProperty = function addProperty(key) {
+  $scope.addProperty = function addProperty(key, focus = true) {
     $scope.currentElement.$ = $scope.currentElement.$ || {};
     $scope.currentElement.$[key] = "";
     $scope.keyName = '';
     $scope.currentElementProperties.push(key);
+    if (focus) setImmediate(function() {
+      document.getElementById('prop-' + key).focus();
+    });
   };
 
   $scope.getTheFile = function getTheFile() {
