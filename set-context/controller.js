@@ -26,25 +26,25 @@ var setContext = angular.module('set-context', ['customfilter']);
 
 // Define the `contextController` controller on the `set-context` module
 setContext.controller('contextController', function contextController($scope) {
-  var getConfig = (function IIFEgetConfig(){
+  var getConfig = (function IIFEgetConfig() {
     var config = null;
     return function getConfig() {
-      var pnc = _.Promise.noCallBack();
+      var { promise, resolve, reject } = _.Promise.noCallBack();
       if (config !== null) {
-        setImmediate(function(){
-          pnc.resolve(config);
+        setImmediate(function() {
+          resolve(config);
         });
       } else {
         fsp.readFile("config.json")
-        .then(function(data){
-          config = JSON.parse(data);
-          pnc.resolve(config);
-        })
-        .catch(function(err){
-          pnc.reject(err);
-        });
+          .then(function(data) {
+            config = JSON.parse(data);
+            resolve(config);
+          })
+          .catch(function(err) {
+            reject(err);
+          });
       }
-      return pnc.promise;
+      return promise;
     };
   }());
 
@@ -96,16 +96,35 @@ setContext.controller('contextController', function contextController($scope) {
   };
 
   $scope.getTheFile = function getTheFile() {
-    var content =
-      '(function(global){global.context=' +
-      JSON.stringify($scope.context) +
-      ';})(this);\n';
-    getConfig().then(function(config){
-      config.path["_get-context.js"].forEach(function(path){
-        fs.writeFile(path, content);
+    var content = contextAsString();
+    getConfig().then(function(config) {
+      config.path["_get-context.js"].forEach(function(path) {
+        fsp.writeFile(path, content);
       });
     });
   };
+
+  $scope.downTheFile = function downTheFile() {
+    downloadAsFile(contextAsString(), "_get-context.js", "application/javascript");
+  };
+
+  function contextAsString() {
+    return '(function(global){global.context=' +
+      JSON.stringify($scope.context) +
+      ';})(this);\n';
+  }
+
+  function downloadAsFile(content, fileName, mimeType) {
+    var blob = new Blob([content], { type: mimeType });
+    var objectUrl = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(objectUrl);
+  }
 
   function getChild(root, path) {
     var child = root;
