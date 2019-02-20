@@ -1,4 +1,4 @@
 .dropdown-menu {
 	max-height: 75vh;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
