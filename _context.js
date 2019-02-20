@@ -118,7 +118,6 @@ Context.prototype.init = function init() {
 };
 
 Context.prototype.get = function get(path, options) {
-  console.error('get', path);
   options = options || {};
   options.type = options.type || null;
   var parts = path.split('.');
