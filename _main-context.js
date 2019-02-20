@@ -115,7 +115,7 @@
       titleArr.unshift(context.get(titleCible + '.id', { type: 'string' }));
       titleCible += '.parent';
     }
-    titleElem.appendChild(document.createTextNode(titleArr.join(' ') + ':'));
+    titleElem.appendChild(document.createTextNode('\u261a' + titleArr.join(' ') + ':'));
     element.appendChild(titleElem);
   }
 
