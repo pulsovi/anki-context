@@ -154,7 +154,10 @@ setContext.controller('contextController', function contextController($scope) {
   }
 
   function getFieldsList(elem) {
-    return elem.$ ? Object.keys(elem.$) : [];
+    const arrays = ['groups'];
+    return elem.$ ? Object.keys(elem.$).filter(function(key){
+      return !~arrays.indexOf(key);
+    }) : [];
   }
 
   function savePath() {
