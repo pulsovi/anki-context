@@ -212,7 +212,7 @@ setTimeout(function bootstrapIIFE() {
   global.log = Log('context-log');
   log("starts\n");
   new Project('_main-context.js')
-    .require(new Project('_get-context.js'))
+    .require(new Project('_get-context.js' + '?prevent-cache=' + Math.floor(Math.random()*10000)))
     .require(new Project('_context.js')
       .require(new Project('_Promise.js')
         .require(new Project('_promise_polyfill.js'))
