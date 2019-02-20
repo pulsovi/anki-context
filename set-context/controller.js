@@ -51,7 +51,10 @@ setContext.controller('contextController', function contextController($scope) {
   window.mainScope = $scope;
 
   $scope.path = [];
-  $scope.context = context;
+  $scope.context = context; // root of the tree
+  $scope.currentElement = null; // Object current node in the tree
+  $scope.currentElementProperties = null; // Array meta data properties
+  $scope.currentElementChildren = null; // Array child nodes
 
   $scope.setPath = function(index, key) {
     // valeurs par defaut
@@ -63,7 +66,8 @@ setContext.controller('contextController', function contextController($scope) {
     // main
     var elem = $scope.currentElement = getPath(index, key);
     $scope.currentElementProperties = getFieldsList(elem);
-    var pathItem = { id: key, keys: getChildrenList(elem) };
+    $scope.currentElementChildren = getChildrenList(elem);
+    var pathItem = { id: key, keys: $scope.currentElementChildren };
     $scope.path.splice(index + 1, $scope.path.length, pathItem);
     savePath();
   };
