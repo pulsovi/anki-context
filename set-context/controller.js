@@ -1,55 +1,72 @@
 // jshint esversion : 6
 
+/*\
+ *  global declarations
+\*/
 const fs = require('fs');
 const fsp = fs.promises;
 const ngui = require('nw.gui');
 const nwin = ngui.Window.get();
 const _ = require('dg-underscore');
 
-window.setImmediate = global.setImmediate;
+const setImmediate = global.setImmediate;
 
-(function MaximizeIIFE() {
-  nwin.on('loaded', function() {
-    nwin.show();
-    nwin.maximize();
-  });
+/*\
+ *  appLevel
+\*/
+var getConfig = (function IIFEgetConfig() {
+
+  var config = null;
+
+  return function getConfig() {
+    var { promise, resolve, reject } = _.Promise.noCallBack();
+    if (config !== null) {
+      setImmediate(function() {
+        resolve(config);
+      });
+    } else {
+      fsp.readFile("config.json")
+        .then(function(data) {
+          config = JSON.parse(data);
+          resolve(config);
+        })
+        .catch(function(err) {
+          errorLog(err);
+          errorLog('\tat: ' + Error().stack.split('/').pop());
+          reject(err);
+        });
+    }
+    return promise;
+  };
+
 }());
 
+/*\
+ *  nw level
+\*/
+nwin.on('loaded', function() {
+  nwin.show();
+  nwin.maximize();
+});
+
+/*\
+ *  angular filters declarations
+\*/
 angular.module('customfilter', []).filter('getType', function() {
   return function(obj) {
     return typeof obj;
   };
 });
 
+/*\
+ *  angular modules
+\*/
 // Define the `set-context` module
 var setContext = angular.module('set-context', ['customfilter']);
 
 // Define the `contextController` controller on the `set-context` module
 setContext.controller('contextController', function contextController($scope) {
 
-  var getConfig = (function IIFEgetConfig() {
-    var config = null;
-    return function getConfig() {
-      var { promise, resolve, reject } = _.Promise.noCallBack();
-      if (config !== null) {
-        setImmediate(function() {
-          resolve(config);
-        });
-      } else {
-        fsp.readFile("config.json")
-          .then(function(data) {
-            config = JSON.parse(data);
-            resolve(config);
-          })
-          .catch(function(err) {
-            errorLog(err);
-            errorLog('\tat: ' + Error().stack.split('/').pop());
-            reject(err);
-          });
-      }
-      return promise;
-    };
-  }());
 
   window.mainScope = $scope;
 
