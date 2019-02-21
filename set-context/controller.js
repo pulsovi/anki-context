@@ -177,7 +177,8 @@ function contextController($scope) {
     $scope.addProperty('title', false);
   };
 
-  $scope.getTheFile = function getTheFile() {
+  //save or download
+  $scope.saveContext = function saveContext() {
     var content = contextAsString();
     getConfig().then(function(config) {
       config.path["_get-context.js"].forEach(function(path) {
@@ -186,7 +187,7 @@ function contextController($scope) {
     });
   };
 
-  $scope.downTheFile = function downTheFile() {
+  $scope.downContext = function downContext() {
     downloadAsFile(contextAsString(), "_get-context.js", "application/javascript");
   };
 
