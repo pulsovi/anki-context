@@ -14,6 +14,7 @@ const setImmediate = global.setImmediate;
 /*\
  *  appLevel
 \*/
+// get config options
 var getConfig = (function IIFEgetConfig() {
 
   var config = null;
@@ -39,6 +40,15 @@ var getConfig = (function IIFEgetConfig() {
     return promise;
   };
 
+}());
+
+// debug tool
+var errorLog = (function() {
+  var console = document.getElementById('context-error');
+  return function(data) {
+    console.appendChild(document.createTextNode(data));
+    console.appendChild(document.createTextNode('\n'));
+  };
 }());
 
 /*\
@@ -70,23 +80,14 @@ setContext.controller('contextController', contextController);
 
 function contextController($scope) {
 
-
-  window.mainScope = $scope;
-
+  // $scope properties
   $scope.path = [];
   $scope.context = context; // root of the tree
   $scope.currentElement = null; // Object current node in the tree
   $scope.currentElementProperties = null; // Array meta data properties
   $scope.currentElementChildren = null; // Array child nodes
 
-  var errorLog = (function() {
-    var console = document.getElementById('context-error');
-    return function(data) {
-      console.appendChild(document.createTextNode(data));
-      console.appendChild(document.createTextNode('\n'));
-    };
-  }());
-
+  // path and breadcrumb functions
   $scope.setPath = function(index, key) {
     // valeurs par defaut
     index = index || 0;
