@@ -89,7 +89,7 @@ setContext.controller('contextController', function contextController($scope) {
     if (focus) {
       $scope.setPath($scope.path.length - 1, key);
     } else {
-      $scope.path[$scope.path.length - 1].keys.push(key);
+      $scope.currentElementChildren.push(key);
     }
   };
 
