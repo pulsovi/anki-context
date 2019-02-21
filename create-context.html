@@ -29,6 +29,7 @@
   <textarea id="model" style="width: 400px; height: 100px;"></textarea>
   <textarea id="rendered" style="width: 400px; height: 100px;"></textarea>
   <div id="diff"></div>
+  <div id="selects"></div>
   <script type="text/javascript">
   var data = document.getElementById('data');
   var length = document.getElementById('length');
@@ -37,9 +38,14 @@
   var model = document.getElementById('model');
   var diff = document.getElementById('diff');
   var rendered = document.getElementById('rendered');
+  var selects = document.getElementById('selects');
 
   output.removeAttribute('id');
   data.onchange = data.onkeyup = length.onchange = length.onkeyup = bold.onchange = bold.onkeyup = reload;
+  document.onmouseup = function(){
+    var selection = getSelection().getRangeAt(0);
+    selects.innerText = selection.startOffset + ' ' + (selection.endOffset - selection.startOffset);
+  };
 
   function reload() {
     output.innerHTML = '&#8203;';
