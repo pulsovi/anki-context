@@ -31,11 +31,30 @@
           <input dir="rtl" class="form-control" id="prop-{{key}}" ng-model="currentElement.$[key]" ng-if="key !== 'content'">
           <textarea dir="rtl" class="form-control" id="prop-{{key}}" ng-model="currentElement.$[key]" ng-if="key === 'content'" rows="7"></textarea>
         </div>
-        <div class="form-group">
-          <div class="btn-group">
-            <span class="btn btn-secondary" href="#">Groups</span>
-            <button class="btn btn-secondary"><i class="fas fa-chevron-circle-right"></i></button>
-            <button class="btn btn-secondary"><i class="fas fa-times-circle"></i></button>
+        <div class="card">
+          <div class="card-body">
+            <ul class="nav nav-tabs" id="Tools" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="group-tab" data-toggle="tab" href="#group" role="tab" aria-controls="group" aria-selected="true" ng-click="setHash('group')">Groups</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="cloze-tab" data-toggle="tab" href="#cloze" role="tab" aria-controls="cloze" aria-selected="false" ng-click="setHash('cloze')">Clozes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="model-tab" data-toggle="tab" href="#model" role="tab" aria-controls="model" aria-selected="false" ng-click="setHash('model')">Model</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="ToolsContent">
+              <div class="tab-pane fade show active" id="group" role="tabpanel" aria-labelledby="group-tab" ng-show="hash == 'group'">
+                <div class="card-body">Groups</div>
+              </div>
+              <div class="tab-pane fade show active" id="cloze" role="tabpanel" aria-labelledby="cloze-tab" ng-show="hash == 'cloze'">
+                <div class="card-body">Clozes</div>
+              </div>
+              <div class="tab-pane fade show active" id="model" role="tabpanel" aria-labelledby="model-tab" ng-show="hash == 'model'">
+                <div class="card-body">Model</div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="form-group">

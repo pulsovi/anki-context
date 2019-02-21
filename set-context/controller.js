@@ -86,6 +86,7 @@ function contextController($scope) {
   $scope.currentElement = null; // Object current node in the tree
   $scope.currentElementProperties = null; // Array meta data properties
   $scope.currentElementChildren = null; // Array child nodes
+  $scope.hash = null;
 
   // path and breadcrumb functions
   function restorePath() {
@@ -149,6 +150,13 @@ function contextController($scope) {
     localStorage.setItem('path', JSON.stringify(pathList));
   }
 
+  //tab apps
+  //tab functions
+  $scope.setHash = function setHash(newValue) {
+    if ($scope.hash == newValue) $scope.hash = null;
+    else $scope.hash = newValue;
+  };
+
   //add child or property
   $scope.addProperty = function addProperty(key, focus = true) {
     $scope.currentElement.$ = $scope.currentElement.$ || {};
@@ -209,5 +217,6 @@ function contextController($scope) {
     URL.revokeObjectURL(objectUrl);
   }
 
+  //main
   restorePath();
 }
