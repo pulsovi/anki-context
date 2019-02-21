@@ -88,6 +88,14 @@ function contextController($scope) {
   $scope.currentElementChildren = null; // Array child nodes
 
   // path and breadcrumb functions
+  function restorePath() {
+    var savedPath = localStorage.getItem("path");
+    savedPath = savedPath ? JSON.parse(savedPath) : ["context"];
+    for (var i = 0; i < savedPath.length; ++i) {
+      $scope.setPath(i - 1, savedPath[i]);
+    }
+  }
+
   $scope.setPath = function(index, key) {
     // valeurs par defaut
     index = index || 0;
@@ -103,6 +111,43 @@ function contextController($scope) {
     $scope.path.splice(index + 1, $scope.path.length, pathItem);
     savePath();
   };
+
+  function getPath(index, key) {
+    var path = $scope.path.slice(0, index + 1)
+      .map(function(i) { return i.id; })
+      .concat(key);
+    return getChild($scope, path);
+  }
+
+  function getChild(root, path) {
+    var child = root;
+    var key;
+    while ((key = path.shift())) {
+      child = child[key];
+    }
+    return child;
+  }
+
+  function getFieldsList(elem) {
+    const arrays = ['groups'];
+    return elem.$ ? Object.keys(elem.$).filter(function(key) {
+      return !~arrays.indexOf(key);
+    }) : [];
+  }
+
+  function getChildrenList(elem) {
+    var keys = Object.keys(elem);
+    return keys.filter(function(k) {
+      return k !== '$';
+    });
+  }
+
+  function savePath() {
+    var pathList = $scope.path.map(function(e) {
+      return e.id;
+    });
+    localStorage.setItem('path', JSON.stringify(pathList));
+  }
 
   $scope.addChild = function addChild(key, focus = true) {
     $scope.currentElement[key] = $scope.currentElement[key] || {};
@@ -160,51 +205,6 @@ function contextController($scope) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(objectUrl);
-  }
-
-  function getChild(root, path) {
-    var child = root;
-    var key;
-    while ((key = path.shift())) {
-      child = child[key];
-    }
-    return child;
-  }
-
-  function getPath(index, key) {
-    var path = $scope.path.slice(0, index + 1)
-      .map(function(i) { return i.id; })
-      .concat(key);
-    return getChild($scope, path);
-  }
-
-  function getChildrenList(elem) {
-    var keys = Object.keys(elem);
-    return keys.filter(function(k) {
-      return k !== '$';
-    });
-  }
-
-  function getFieldsList(elem) {
-    const arrays = ['groups'];
-    return elem.$ ? Object.keys(elem.$).filter(function(key) {
-      return !~arrays.indexOf(key);
-    }) : [];
-  }
-
-  function savePath() {
-    var pathList = $scope.path.map(function(e) {
-      return e.id;
-    });
-    localStorage.setItem('path', JSON.stringify(pathList));
-  }
-
-  function restorePath() {
-    var savedPath = localStorage.getItem("path");
-    savedPath = savedPath ? JSON.parse(savedPath) : ["context"];
-    for (var i = 0; i < savedPath.length; ++i) {
-      $scope.setPath(i - 1, savedPath[i]);
-    }
   }
 
   restorePath();
