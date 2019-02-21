@@ -52,11 +52,12 @@ nwin.on('loaded', function() {
 /*\
  *  angular filters declarations
 \*/
-angular.module('customfilter', []).filter('getType', function() {
-  return function(obj) {
-    return typeof obj;
-  };
-});
+angular.module('customfilter', [])
+  .filter('getType', function() {
+    return function(obj) {
+      return typeof obj;
+    };
+  });
 
 /*\
  *  angular modules
@@ -65,7 +66,9 @@ angular.module('customfilter', []).filter('getType', function() {
 var setContext = angular.module('set-context', ['customfilter']);
 
 // Define the `contextController` controller on the `set-context` module
-setContext.controller('contextController', function contextController($scope) {
+setContext.controller('contextController', contextController);
+
+function contextController($scope) {
 
 
   window.mainScope = $scope;
@@ -183,7 +186,7 @@ setContext.controller('contextController', function contextController($scope) {
 
   function getFieldsList(elem) {
     const arrays = ['groups'];
-    return elem.$ ? Object.keys(elem.$).filter(function(key){
+    return elem.$ ? Object.keys(elem.$).filter(function(key) {
       return !~arrays.indexOf(key);
     }) : [];
   }
@@ -204,4 +207,4 @@ setContext.controller('contextController', function contextController($scope) {
   }
 
   restorePath();
-});
+}
