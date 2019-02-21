@@ -149,16 +149,7 @@ function contextController($scope) {
     localStorage.setItem('path', JSON.stringify(pathList));
   }
 
-  $scope.addChild = function addChild(key, focus = true) {
-    $scope.currentElement[key] = $scope.currentElement[key] || {};
-    $scope.keyName = '';
-    if (focus) {
-      $scope.setPath($scope.path.length - 1, key);
-    } else {
-      $scope.currentElementChildren.push(key);
-    }
-  };
-
+  //add child or property
   $scope.addProperty = function addProperty(key, focus = true) {
     $scope.currentElement.$ = $scope.currentElement.$ || {};
     $scope.currentElement.$[key] = $scope.currentElement.$[key] || "";
@@ -168,6 +159,16 @@ function contextController($scope) {
     if (focus) setImmediate(function() {
       document.getElementById('prop-' + key).focus();
     });
+  };
+
+  $scope.addChild = function addChild(key, focus = true) {
+    $scope.currentElement[key] = $scope.currentElement[key] || {};
+    $scope.keyName = '';
+    if (focus) {
+      $scope.setPath($scope.path.length - 1, key);
+    } else {
+      $scope.currentElementChildren.push(key);
+    }
   };
 
   $scope.addFullChild = function addFullChild(key, focus = true) {
