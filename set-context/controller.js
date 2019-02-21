@@ -26,6 +26,7 @@ var setContext = angular.module('set-context', ['customfilter']);
 
 // Define the `contextController` controller on the `set-context` module
 setContext.controller('contextController', function contextController($scope) {
+
   var getConfig = (function IIFEgetConfig() {
     var config = null;
     return function getConfig() {
@@ -41,6 +42,8 @@ setContext.controller('contextController', function contextController($scope) {
             resolve(config);
           })
           .catch(function(err) {
+            errorLog(err);
+            errorLog('\tat: ' + Error().stack.split('/').pop());
             reject(err);
           });
       }
@@ -55,6 +58,14 @@ setContext.controller('contextController', function contextController($scope) {
   $scope.currentElement = null; // Object current node in the tree
   $scope.currentElementProperties = null; // Array meta data properties
   $scope.currentElementChildren = null; // Array child nodes
+
+  var errorLog = (function() {
+    var console = document.getElementById('context-error');
+    return function(data) {
+      console.appendChild(document.createTextNode(data));
+      console.appendChild(document.createTextNode('\n'));
+    };
+  }());
 
   $scope.setPath = function(index, key) {
     // valeurs par defaut
