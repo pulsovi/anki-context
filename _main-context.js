@@ -46,7 +46,7 @@
     var ommitCloseTags = ['base', 'br', 'input', 'meta', 'wbr'];
 
     while ((currentTag = allTags.shift())) {
-      if (currentTag[1] == '/') {
+      if (currentTag.charAt(1) == '/') {
         if (!tagDeepArr.length || currentTag.slice(2, -1) !== tagDeepArr.pop()) {
           return false;
         }
