@@ -45,8 +45,23 @@
               </li>
             </ul>
             <div class="tab-content" id="ToolsContent">
-              <div class="tab-pane fade show active" id="group" role="tabpanel" aria-labelledby="group-tab" ng-show="hash == 'group'">
-                <div class="card-body">Groups</div>
+              <div id="groups" class="tab-pane fade show active card-body" role="tabpanel" aria-labelledby="group-tab" ng-show="hash == 'group'">
+                <div id="heading-group-{{gindex}}" class="card" ng-repeat="(gindex, group) in currentElementGroups()">
+                  <div class="card-header text-center" data-toggle="collapse" data-target="#group-{{gindex}}" aria-expanded="true" aria-controls="group-{{gindex}}">{{group.title}}</div>
+                  <div id="group-{{gindex}}" class="collapse" aria-labelledby="heading-group-{{gindex}}" data-parent="#groups">
+                    <div class="form-group card-body">
+                      <label for="title-{{gindex}}">title</label>
+                      <input type="text" id="title-{{gindex}}" class="form-control" dir="rtl" ng-model="group.title">
+                      <label for="start-{{gindex}}">start</label>
+                      <input type="number" id="start-{{gindex}}" class="form-control" dir="rtl" ng-model="group.start">
+                      <label for="end-{{gindex}}">end</label>
+                      <input type="number" id="end-{{gindex}}" class="form-control" dir="rtl" ng-model="group.end">
+                    </div>
+                  </div>
+                </div>
+                <div class="card" ng-click="addGroup()">
+                  <div class="card-header text-center"><i class="fas fa-plus-circle"></i></div>
+                </div>
               </div>
               <div class="tab-pane fade show active" id="cloze" role="tabpanel" aria-labelledby="cloze-tab" ng-show="hash == 'cloze'">
                 <div class="card-body">Clozes</div>

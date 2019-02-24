@@ -157,6 +157,17 @@ function contextController($scope) {
     else $scope.hash = newValue;
   };
 
+  //groups functions
+  $scope.currentElementGroups = function currentElementGroups(){
+    return ($scope.currentElement.$ && $scope.currentElement.$.groups) || null;
+  };
+
+  $scope.addGroup = function addGroup(){
+    $scope.currentElement.$ = $scope.currentElement.$ || {};
+    $scope.currentElement.$.groups = $scope.currentElement.$.groups || [];
+    ++$scope.currentElement.$.groups.length;
+  };
+
   //add child or property
   $scope.addProperty = function addProperty(key, focus = true) {
     $scope.currentElement.$ = $scope.currentElement.$ || {};
