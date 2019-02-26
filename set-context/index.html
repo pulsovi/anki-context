@@ -46,7 +46,7 @@
             </ul>
             <div class="tab-content" id="ToolsContent">
               <div id="groups" class="tab-pane fade show active card-body" role="tabpanel" aria-labelledby="group-tab" ng-show="hash == 'group'">
-                <div id="heading-group-{{gindex}}" class="card" ng-repeat="(gindex, group) in currentElementGroups()">
+                <div id="heading-group-{{gindex}}" class="card" ng-repeat="(gindex, group) in currentElementGroups() track by group.start">
                   <div class="card-header text-center" data-toggle="collapse" data-target="#group-{{gindex}}" aria-expanded="true" aria-controls="group-{{gindex}}">{{group.title}}</div>
                   <div id="group-{{gindex}}" class="collapse" aria-labelledby="heading-group-{{gindex}}" data-parent="#groups">
                     <div class="form-group card-body">
