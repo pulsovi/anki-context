@@ -165,7 +165,7 @@ function contextController($scope) {
   $scope.addGroup = function addGroup(){
     $scope.currentElement.$ = $scope.currentElement.$ || {};
     $scope.currentElement.$.groups = $scope.currentElement.$.groups || [];
-    ++$scope.currentElement.$.groups.length;
+    $scope.currentElement.$.groups.push({title:'title',start:0,end:0});
   };
 
   //add child or property
