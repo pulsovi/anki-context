@@ -1,7 +1,7 @@
 {
   "author": "David Gabison",
   "dependencies": {
-    "nw": "^0.36.0"
+    "nw": "^0.39.1"
   },
   "description": "create and update a JSON file to provide context on Anki cards",
   "license": "ISC",
