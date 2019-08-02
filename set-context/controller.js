@@ -67,6 +67,14 @@ angular.module('customfilter', [])
     return function(obj) {
       return typeof obj;
     };
+  })
+  .filter('idChain', function() {
+    function byId(elem) {
+      return elem.id;
+    }
+    return function(obj) {
+      return obj.map(byId).join('.');
+    };
   });
 
 /*\

@@ -26,6 +26,7 @@
         </li>
       </ol>
       <form>
+        <div class="form-group">{{ path | idChain }}</div>
         <div class="form-group" ng-repeat="key in currentElementProperties">
           <label for="{{key}}">{{key}}</label>
           <input dir="rtl" class="form-control" id="prop-{{key}}" ng-model="currentElement.$[key]" ng-if="key !== 'content'">
