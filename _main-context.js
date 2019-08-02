@@ -7,6 +7,7 @@
 
   contextQuote();
   contextShow();
+  contextHide();
   contextData();
 
   function contextData() {
@@ -22,7 +23,20 @@
     var collection = document.querySelectorAll('[context-show]');
     for (var i = 0; i < collection.length; ++i) {
       if (!context.get(collection[i].getAttribute('context-show'))) {
-        collection[i].style.display = 'none';
+        collection[i].parentElement.removeChild(collection[i]);
+      } else {
+        collection[i].hidden = false;
+      }
+    }
+  }
+
+  function contextHide() {
+    var collection = document.querySelectorAll('[context-hide]');
+    for (var i = 0; i < collection.length; ++i) {
+      if (context.get(collection[i].getAttribute('context-hide'))) {
+        collection[i].parentElement.removeChild(collection[i]);
+      } else {
+        collection[i].hidden = false;
       }
     }
   }
