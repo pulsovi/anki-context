@@ -211,11 +211,11 @@ Project.prototype.watch = function watch() {
 setTimeout(function bootstrapIIFE() {
   global.log = Log('context-log');
   log("starts\n");
-  new Project('_main-context.js')
+  new Project('_main-context.js' + '?prevent-cache=' + Math.floor(Math.random()*10000))
     .require(new Project('_get-context.js' + '?prevent-cache=' + Math.floor(Math.random()*10000)))
-    .require(new Project('_context.js')
-      .require(new Project('_Promise.js')
-        .require(new Project('_promise_polyfill.js'))
+    .require(new Project('_context.js' + '?prevent-cache=' + Math.floor(Math.random()*10000))
+      .require(new Project('_Promise.js' + '?prevent-cache=' + Math.floor(Math.random()*10000))
+        .require(new Project('_promise_polyfill.js' + '?prevent-cache=' + Math.floor(Math.random()*10000)))
       )
     )
     .load()
