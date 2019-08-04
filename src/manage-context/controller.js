@@ -1,15 +1,24 @@
-// jshint esversion : 6
+// jshint esversion : 8
 
 /*\
  *  global declarations
 \*/
 const fs = require('fs');
 const fsp = fs.promises;
-const ngui = require('nw.gui');
-const nwin = ngui.Window.get();
+const path = require('path');
+const util = require('util');
+
+const dateformat = require('dateformat');
+const uniqid = require('uniqid');
+
+const ankiManager = require('anki-manager');
 const _ = require('dg-underscore');
 
+const ngui = require('nw.gui');
+
 const setImmediate = global.setImmediate;
+
+const nwin = ngui.Window.get();
 
 /*\
  *  appLevel
@@ -51,6 +60,18 @@ var errorLog = (function() {
   };
 }());
 
+// load script
+function loadScript(src) {
+  return new Promise(resolve => {
+    var script = document.createElement('script');
+    script.onload = function() {
+      resolve(this);
+    };
+    document.head.appendChild(script);
+    script.src = src;
+  });
+}
+
 /*\
  *  nw level
 \*/
@@ -90,7 +111,7 @@ function contextController($scope) {
 
   // $scope properties
   $scope.path = [];
-  $scope.context = context; // root of the tree
+  $scope.context = null; // root of the tree
   $scope.currentElement = null; // Object current node in the tree
   $scope.currentElementProperties = null; // Array meta data properties
   $scope.currentElementChildren = null; // Array child nodes
@@ -166,14 +187,14 @@ function contextController($scope) {
   };
 
   //groups functions
-  $scope.currentElementGroups = function currentElementGroups(){
-    return ($scope.currentElement.$ && $scope.currentElement.$.groups) || null;
+  $scope.currentElementGroups = function currentElementGroups() {
+    return ($scope.currentElement && $scope.currentElement.$ && $scope.currentElement.$.groups) || null;
   };
 
-  $scope.addGroup = function addGroup(){
+  $scope.addGroup = function addGroup() {
     $scope.currentElement.$ = $scope.currentElement.$ || {};
     $scope.currentElement.$.groups = $scope.currentElement.$.groups || [];
-    $scope.currentElement.$.groups.push({title:'title',start:0,end:0});
+    $scope.currentElement.$.groups.push({ title: 'title', start: 0, end: 0 });
   };
 
   //add child or property
@@ -205,13 +226,16 @@ function contextController($scope) {
   };
 
   //save or download
-  $scope.saveContext = function saveContext() {
+  $scope.saveContext = async function saveContext() {
     var content = contextAsString();
-    getConfig().then(function(config) {
-      config.path["_get-context.js"].forEach(function(path) {
-        fsp.writeFile(path, content);
-      });
-    });
+    var config = await getConfig();
+    var config_context = config.path["_get-context.js"];
+    var slug = dateformat(new Date(), 'yyyy-mm-dd') + '.' + uniqid();
+    var versionFile = path.resolve(config_context.versions, `_get-context.${slug}.js`);
+    await Promise.all([
+      util.promisify(fs.writeFile)(versionFile, content),
+      util.promisify(fs.writeFile)(config_context.dest, content)
+    ]);
   };
 
   $scope.downContext = function downContext() {
@@ -220,7 +244,7 @@ function contextController($scope) {
 
   function contextAsString() {
     return '(function(global){global.context=' +
-      JSON.stringify($scope.context) +
+      JSON.stringify($scope.context, null, '\t') +
       ';})(this);\n';
   }
 
@@ -237,5 +261,12 @@ function contextController($scope) {
   }
 
   //main
-  restorePath();
+  async function main() {
+    var port = await ankiManager.getPort();
+    await loadScript(`http://127.0.0.1:${port}/_get-context.js`);
+    $scope.context = context; // root of the tree
+    restorePath();
+    $scope.$digest();
+  }
+  main();
 }

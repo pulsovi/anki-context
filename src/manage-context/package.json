@@ -1,7 +1,10 @@
 {
   "author": "David Gabison",
   "dependencies": {
-    "nw": "^0.39.1"
+    "anki-manager": "git@github.com:pulsovi/anki-manager.git",
+    "dateformat": "^3.0.3",
+    "nw": "^0.39.1",
+    "uniqid": "^5.0.3"
   },
   "description": "create and update a JSON file to provide context on Anki cards",
   "license": "ISC",

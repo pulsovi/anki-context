@@ -16,6 +16,5 @@ function merge_if_is_diff () {
 
 merge_if_is_diff `realpath "${basedir}/../app/_context.js"` `realpath "${APPDATA}/Anki2/David/collection.media/_context.js"`
 merge_if_is_diff `realpath "${basedir}/../app/_context-bootstrap.js"` `realpath "${APPDATA}/Anki2/David/collection.media/_context-bootstrap.js"`
-merge_if_is_diff `realpath "${basedir}/../app/_get-context.js"` `realpath "${APPDATA}/Anki2/David/collection.media/_get-context.js"`
 merge_if_is_diff `realpath "${basedir}/../app/_Promise.js"` `realpath "${APPDATA}/Anki2/David/collection.media/_Promise.js"`
 merge_if_is_diff `realpath "${basedir}/../app/_main-context.js"` `realpath "${APPDATA}/Anki2/David/collection.media/_main-context.js"`
