@@ -1,7 +1,7 @@
 {
   "author": "David Gabison",
   "dependencies": {
-    "anki-manager": "git@github.com:pulsovi/anki-manager.git",
+    "anki-manager": "https://github.com/pulsovi/anki-manager.git",
     "dateformat": "^3.0.3",
     "nw": "^0.39.1",
     "uniqid": "^5.0.3"
