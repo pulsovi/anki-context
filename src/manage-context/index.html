@@ -38,7 +38,7 @@
               <li class="nav-item">
                 <a class="nav-link active" id="group-tab" data-toggle="tab" href="#group" role="tab" aria-controls="group" aria-selected="true" ng-click="setHash('group')">Groups</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" ng-show="currentElement.$.content">
                 <a class="nav-link" id="cloze-tab" data-toggle="tab" href="#cloze" role="tab" aria-controls="cloze" aria-selected="false" ng-click="setHash('cloze')">Clozes</a>
               </li>
               <li class="nav-item">
@@ -64,8 +64,30 @@
                   <div class="card-header text-center"><i class="fas fa-plus-circle"></i></div>
                 </div>
               </div>
-              <div class="tab-pane fade show active" id="cloze" role="tabpanel" aria-labelledby="cloze-tab" ng-show="hash == 'cloze'">
-                <div class="card-body">Clozes</div>
+              <div id="cloze" class="tab-pane fade show active card-body" role="tabpanel" aria-labelledby="cloze-tab" ng-show="hash == 'cloze' && currentElement.$.content">
+                <div class="card">
+                  <div class="card-body cloze-text" dir="rtl" ng-bind-html="trust(currentElement.$.content)"></div>
+                </div>
+                <div id="heading-cloze-{{cindex}}" class="card" ng-repeat="(cindex, cloze) in currentElementClozes() track by cloze.clozeNb">
+                  <div class="card-header text-center" data-toggle="collapse" data-target="#cloze-{{cindex}}" aria-expanded="false" aria-controls="cloze-{{cindex}}">{{cloze.clozeNb}}</div>
+                  <div id="cloze-{{cindex}}" class="collapse" aria-labelledby="heading-cloze-{{cindex}}" data-parent="#cloze">
+                    <div class="form-cloze card-body">
+                      <div class="cloze-text" ng-bind-html="trust(highlightCloze(currentElement.$, cloze.clozes))"></div>
+                      <label for="index-{{cindex}}">index</label>
+                      <input type="text" id="index-{{cindex}}" class="form-control" ng-model="cloze.clozeNb">
+                      <div ng-repeat="(itemIndex, clozeItem) in cloze.clozes track by (clozeItem.start + '-' + clozeItem.end)">
+                        <label for="cloze-item-{{cindex}}-{{itemIndex}}">{{itemIndex}} start</label>
+                        <input type="number" class="form-control" id="cloze-item-{{cindex}}-{{itemIndex}}" ng-model="clozeItem.start">
+                        <label for="cloze-item-{{cindex}}-{{itemIndex}}">{{itemIndex}} end</label>
+                        <input type="number" class="form-control" id="cloze-item-{{cindex}}-{{itemIndex}}" ng-model="clozeItem.end">
+                      </div>
+                      <div class="btn btn-block btn-secondary" ng-click="addCloze(cloze)"><i class="fas fa-plus-circle"></i></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card" ng-click="addClozeGroup()">
+                  <div class="card-header text-center"><i class="fas fa-plus-circle"></i></div>
+                </div>
               </div>
               <div class="tab-pane fade show active" id="model" role="tabpanel" aria-labelledby="model-tab" ng-show="hash == 'model'">
                 <div class="card-body">Model</div>
@@ -84,6 +106,8 @@
         <div class="form-group" ng-hide="keyName">
           <i class="btn btn-danger" ng-click="saveContext()">Enregistrer</i>
           <i class="btn btn-success" ng-click="downContext()">Telecharger</i>
+          <i class="btn btn-secondary" ng-click="reload()"><i class="fas fa-redo"></i></i>
+          <i class="btn btn-secondary" ng-click="toolbox()"><i class="fas fa-toolbox"></i></i>
         </div>
         <pre id="context-error"></pre>
       </form>

@@ -106,7 +106,11 @@ var setContext = angular.module('set-context', ['customfilter']);
 // Define the `contextController` controller on the `set-context` module
 setContext.controller('contextController', contextController);
 
-function contextController($scope) {
+function contextController($scope, $sce) {
+  // debug tools
+  window.mainScope = $scope;
+  $scope.reload = function() { location.reload(); };
+  $scope.toolbox = function() { nwin.showDevTools(); };
 
   // $scope properties
   $scope.path = [];
@@ -163,7 +167,7 @@ function contextController($scope) {
   }
 
   function getFieldsList(elem) {
-    const arrays = ['groups'];
+    const arrays = ['groups', 'clozes'];
     return elem.$ ? Object.keys(elem.$).filter(function(key) {
       return !~arrays.indexOf(key);
     }) : [];
@@ -200,6 +204,91 @@ function contextController($scope) {
     $scope.currentElement.$.groups = $scope.currentElement.$.groups || [];
     $scope.currentElement.$.groups.push({ title: 'title', start: 0, end: 0 });
   };
+
+  //clozes functions
+  $scope.trust = $sce.trustAsHtml;
+
+  $scope.currentElementClozes = function currentElementClozes() {
+    return ($scope.currentElement && $scope.currentElement.$ && $scope.currentElement.$.clozes) || null;
+  };
+
+  $scope.addClozeGroup = function addCloze() {
+    $scope.currentElement.$ = ($scope.currentElement.$ || {});
+    var $ = $scope.currentElement.$;
+    $.clozes = ($.clozes || []);
+    $.clozes.push({ "clozeNb": $.clozes.length + 1, clozes: [] });
+  };
+
+  $scope.addCloze = function addCloze(cloze) {
+    cloze.clozes.push({});
+  };
+
+  $scope.highlightCloze = function highlightCloze(element, cloze) {
+    var content = element.content;
+    var fragment = document.createDocumentFragment();
+    var div = fragment.appendChild(document.createElement('div'));
+    div.innerHTML = content;
+    cloze.forEach(c => applyCloze(div, c.start, c.end));
+    return div.innerHTML;
+
+    function applyCloze(element, start, stop) {
+      if (stop <= start || element.innerText.length < stop) {
+        throw new ValueError("Impossible d'appliquer le cloze designé sur cet élément");
+      }
+      var pos = 0;
+      var current = nextText(element);
+
+      // pre-start
+      while (current.data.length + pos <= start) {
+        pos += current.data.length;
+        current = nextText(current);
+      }
+
+      // start
+      var before = document.createTextNode(current.data.slice(0, start - pos));
+      var next = document.createTextNode(current.data.slice(start - pos));
+      current.parentElement.insertBefore(before, current);
+      current.parentElement.insertBefore(next, current);
+      current.parentElement.removeChild(current);
+      pos += before.data.length;
+      current = next;
+
+      // middle
+      while (current.data.length + pos < stop) {
+        current.parentElement.insertBefore(document.createElement('b'), current).appendChild(current);
+        pos += current.data.length;
+        current = nextText(current);
+      }
+
+      // stop
+      before = document.createTextNode(current.data.slice(0, stop - pos));
+      next = document.createTextNode(current.data.slice(stop - pos));
+      current.parentElement.insertBefore(document.createElement('b'), current).appendChild(before);
+      current.parentElement.insertBefore(next, current);
+      current.parentElement.removeChild(current);
+    }
+
+    function nextText(element) {
+      var current = element;
+      do
+        current = nextElement(current);
+      while (current.nodeType !== Node.TEXT_NODE);
+      return current;
+    }
+
+    function nextElement(element) {
+      var current = element;
+      if (current.firstChild) {
+        return current.firstChild;
+      }
+      while (!current.nextSibling) {
+        current = current.parentElement;
+      }
+      return current.nextSibling;
+    }
+  };
+
+  //TODO: Attention, à contrôler : les clozes ne doivent pas se chevaucher
 
   //add child or property
   $scope.addProperty = function addProperty(key, focus = true) {
@@ -267,6 +356,7 @@ function contextController($scope) {
   //main
   async function main() {
     var port = await ankiManager.getPort();
+    //await loadScript(`http://127.0.0.1:${port}/_get-context.js?${Math.random()*10000|0}`);
     await loadScript(`http://127.0.0.1:${port}/_get-context.js`);
     $scope.context = context; // root of the tree
     restorePath();
