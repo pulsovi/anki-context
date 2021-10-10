@@ -12,7 +12,6 @@ const dateformat = require('dateformat');
 const uniqid = require('uniqid');
 
 const ankiManager = require('anki-manager');
-const _ = require('dg-underscore');
 
 const ngui = require('nw.gui');
 
@@ -29,7 +28,7 @@ var getConfig = (function IIFEgetConfig() {
   var config = null;
 
   return function getConfig() {
-    var { promise, resolve, reject } = _.Promise.noCallBack();
+    var { promise, resolve, reject } = PromiseNoCallBack();
     if (config !== null) {
       setImmediate(function() {
         resolve(config);
@@ -274,4 +273,17 @@ function contextController($scope) {
     $scope.$digest();
   }
   main();
+}
+
+/*\
+ *  utils functions
+\*/
+function PromiseNoCallback() {
+  const resp = {};
+
+  resp.promise = new Promise((resolve, reject) => {
+    resp.resolve = resolve;
+    resp.reject = reject;
+  });
+  return resp;
 }
