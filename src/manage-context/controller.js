@@ -122,7 +122,9 @@ function contextController($scope) {
     var savedPath = localStorage.getItem("path");
     savedPath = savedPath ? JSON.parse(savedPath) : ["context"];
     for (var i = 0; i < savedPath.length; ++i) {
-      $scope.setPath(i - 1, savedPath[i]);
+      try {
+        $scope.setPath(i - 1, savedPath[i]);
+      } catch (e) {}
     }
   }
 
@@ -135,6 +137,9 @@ function contextController($scope) {
     }
     // main
     var elem = $scope.currentElement = getPath(index, key);
+    if (!elem) {
+      throw new ReferenceError(`${key} not found in ${$scope.currentElement}`);
+    }
     $scope.currentElementProperties = getFieldsList(elem);
     $scope.currentElementChildren = getChildrenList(elem);
     var pathItem = { id: key, keys: $scope.currentElementChildren };
