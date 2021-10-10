@@ -118,6 +118,7 @@ Context.prototype.init = function init() {
 };
 
 Context.prototype.get = function get(path, options) {
+  console.log('get', path);
   options = options || {};
   options.type = options.type || null;
   var parts = path.split('.');
@@ -127,6 +128,8 @@ Context.prototype.get = function get(path, options) {
       elem = elem[parts[i]];
     } else if (elem.hasOwnProperty('$') && elem.$.hasOwnProperty(parts[i])) {
       elem = elem.$[parts[i]];
+    } else {
+      console.error(parts[i] + ' not found in ' + parts.slice(0, i).join('.'));
     }
     if (null === elem) {
       break;
